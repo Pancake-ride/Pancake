@@ -35,3 +35,9 @@ class RideRequestForm(ModelForm):
             'special_vehicle_info': 'Special vehicle require',
             'shareable': 'Will you allow share ride'
         }
+        '''
+        widgets = {
+            'arrival_time': DateTimePickerInput()
+        }
+        '''
+        
