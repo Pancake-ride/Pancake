@@ -89,3 +89,12 @@ def Ride_request_edit(request, pk):
             'ride_edit': ride_edit,
         }
         return render(request, 'Ride/ride_request_edit.html', context)
+
+@login_required
+def Ride_request_detail(request, pk):
+    ride_detail = get_object_or_404(Ride, pk = pk)
+    if ride_detail.owner != request.user:
+        print('user Id error!')
+    context = {'ride_detail': ride_detail}
+    return render(request, 'Ride/ride_detail.html', context)
+    
