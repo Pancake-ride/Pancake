@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['vcm-12463.vm.duke.edu', 'local host']
 # Application definition
 
 INSTALLED_APPS = [
+    'pancakeride.apps.PancakerideConfig',
     'registion.apps.RegistionConfig',
     'polls.apps.PollsConfig',
     'django.contrib.admin',

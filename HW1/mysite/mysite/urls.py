@@ -24,4 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('django.contrib.auth.urls')),
     path('', include('registion.urls')),
+    path('pancake/', include('pancakeride.urls')),
 ]
