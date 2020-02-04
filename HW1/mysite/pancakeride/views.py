@@ -97,4 +97,18 @@ def Ride_request_detail(request, pk):
         print('user Id error!')
     context = {'ride_detail': ride_detail}
     return render(request, 'Ride/ride_detail.html', context)
-    
+
+class RideListView(LoginRequiredMixin, generic.ListView):
+    model = Ride
+    template_name = 'Ride/ride_list.html'
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        status = self.request.GET.get('s')
+        context = super().get_context_data(**kwargs)
+        context['owner_ride_list'] = Ride.objects.filter(owner__exact=self.request.user).filter(status__exact=status)
+        context['sharer_ride_list'] = Ride.objects.filter(sharer=self.request.user).filter(status__exact=status)
+        context['driver_ride_list'] = Ride.objects.filter(driver__user=self.request.user).filter(status__exact=status)
+        
+        #(blog__name='Beatles Blog')
+        return context

@@ -1,0 +1,41 @@
+{% block content %}
+  <h1>Ride List</h1>
+  {% if owner_ride_list %}
+  <ul>
+    {% for request in owner_ride_list %}
+      <li>
+        <a style="color:#888">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>You don't host any ride.</p>
+  {% endif %}       
+
+  <h1>Share List</h1>
+  {% if sharer_ride_list %}
+  <ul>
+    {% for request in sharer_ride_list %}
+      <li>
+        <a style="color:#888">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>You don't share any ride.</p>
+  {% endif %} 
+
+  <h1>Drive List</h1>
+  {% if driver_ride_list %}
+  <ul>
+    {% for request in driver_ride_list %}
+      <li>
+        <a style="color:#888">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>You don't drive any ride.</p>
+  {% endif %} 
+
+{% endblock %}
