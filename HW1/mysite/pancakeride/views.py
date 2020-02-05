@@ -72,7 +72,9 @@ def Ride_request_edit(request, pk):
             ride_edit.special_vehicle_info = edit_form.cleaned_data['special_vehicle_info']
             ride_edit.shareable = edit_form.cleaned_data['shareable']
             ride_edit.save()
-            return redirect(reverse('login'))
+            return redirect('pancakeride:main_home')
+        else:
+            return redirect('pancakeride:ride_request_edit', pk)
     else:
         print(ride_edit.destination)
         form = RideRequestForm(initial = {
@@ -121,9 +123,7 @@ def Sharer_search(request):
             late_arrival_time = form.cleaned_data['late_arrival_time']
             sharer_num = form.cleaned_data['sharer_num']
 
-            
-            
-            available_rides = Ride.objects.filter(destination__exact = destination).filter(arrival_time__gte = early_arrival_time).filter(arrival_time__lte = late_arrival_time).filter(status__exact = 'op')#.filter(shareable__exact = )
+            available_rides = Ride.objects.filter(destination__exact = destination).filter(arrival_time__gte = early_arrival_time).filter(arrival_time__lte = late_arrival_time).filter(status__exact = 'op').filter(shareable__exact = True)
             context['form'] = form
             context['availabel_rides'] = available_rides
             return render(request, 'Sharer/sharer_search.html', context)
@@ -137,8 +137,17 @@ def Sharer_search(request):
 
 
 def Sharer_confirm(request, pk):
+    ride_detail = get_object_or_404(Ride, pk = pk)
     if request.POST:
         print('ppost')
+        print(request.POST['sharer_num'])
+        ride_detail.sharer_num = request.POST['sharer_num']
+        ride_detail.save()
+        return redirect(reverse('login'))
     else:
         print('gget')
-        print(pk)
+        ride_detail = get_object_or_404(Ride, pk = pk)
+        if ride_detail.owner != request.user:
+            print('user Id error!')
+        context = {'ride_detail': ride_detail}
+        return render(request, 'Sharer/sharer_confirm.html', context)

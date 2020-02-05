@@ -83,3 +83,6 @@ class Ride(models.Model):
 
     def get_sharer_confirm_url(self):
         return reverse('pancakeride:sharer_confirm', args = [str(self.id)])
+
+    def get_ride_edit_url(self):
+        return reverse('pancakeride:ride_request_edit', args=[str(self.id)])
