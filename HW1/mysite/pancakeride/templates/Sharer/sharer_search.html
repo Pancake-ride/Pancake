@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/pancake/sharer/search/" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {% if field.help_text %}
+          <small style="color: grey">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+    {% endfor %}
+    <input type="submit" value="搜索"/>
+</form>
+
+<h1>Ride List</h1>
+{% if availabel_rides %}
+<ul>
+  {% for request in availabel_rides %}
+    <li>
+      <a style="color:#888" href = "{{ request.get_sharer_confirm_url }}">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+  <p>You don't host any ride.</p>
+{% endif %}
+</body>
+</html>

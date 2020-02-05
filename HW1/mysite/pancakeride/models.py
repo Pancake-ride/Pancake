@@ -26,7 +26,8 @@ class Driver(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE, 
                                 primary_key = True)
     license_plate_number = models.CharField(max_length = 20, null = False)
-    capacity = models.IntegerField(null = False)
+    capacity = models.IntegerField(null = False, default = 1,
+                                   validators=[MinValueValidator(1)])
     special_vehicle_info = models.TextField('special_vehicle_info', null = True, blank = True, max_length = 200)
     vehicle_type = models.CharField(max_length = 2,
                                      choices = VEHICLE_TYPE,
@@ -56,7 +57,8 @@ class Ride(models.Model):
     driver = models.ForeignKey(Driver, on_delete = models.SET_NULL,
                                null = True, blank = True,
                                related_name = 'driver_ride')
-    passenger_num = models.IntegerField(default = 1)
+    passenger_num = models.IntegerField(default = 1,
+                                        validators = [MinValueValidator(1)])
     destination = models.CharField(max_length = 50, null = False, blank = False)
     arrival_time = models.DateTimeField(null = True, blank = True)
     vehicle_type = models.CharField(max_length = 2,
@@ -78,3 +80,6 @@ class Ride(models.Model):
                                null = True, blank = True,
                                related_name = 'sharer_ride')
     sharer_num = models.IntegerField(default=0)
+
+    def get_sharer_confirm_url(self):
+        return reverse('pancakeride:sharer_confirm', args = [str(self.id)])

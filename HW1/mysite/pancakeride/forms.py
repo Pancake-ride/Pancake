@@ -40,4 +40,12 @@ class RideRequestForm(ModelForm):
             'arrival_time': DateTimePickerInput()
         }
         '''
+
+class SharerSearchForm(forms.Form):
+    destination = forms.CharField(max_length = 50, label = 'Destination')
+    early_arrival_time = forms.DateTimeField(label = 'Early Arrival Time')
+    late_arrival_time = forms.DateTimeField(label = 'Late Arrival Time')
+    sharer_num = forms.IntegerField(label = 'Sharers Number')
+
+
         

@@ -12,4 +12,6 @@ urlpatterns =[
     path('ride/edit/<uuid:pk>/', views.Ride_request_edit, name='ride_request_edit'),
     path('ride/detail/<uuid:pk>/', views.Ride_request_detail, name='ride_detail'),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    re_path(r'^sharer/search/$', views.Sharer_search, name='sharer_search'),
+    path('sharer/confirm/<uuid:pk>/', views.Sharer_confirm, name='sharer_confirm'),
 ]

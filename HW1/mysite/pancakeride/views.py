@@ -11,7 +11,7 @@ from django.views import generic
 from django.db.models import Q
 from django.core.mail import EmailMessage
 
-from .forms import DriverRegisteForm, RideRequestForm
+from .forms import DriverRegisteForm, RideRequestForm, SharerSearchForm
 
 @login_required
 def Driver_regist(request):
@@ -109,6 +109,36 @@ class RideListView(LoginRequiredMixin, generic.ListView):
         context['owner_ride_list'] = Ride.objects.filter(owner__exact=self.request.user).filter(status__exact=status)
         context['sharer_ride_list'] = Ride.objects.filter(sharer=self.request.user).filter(status__exact=status)
         context['driver_ride_list'] = Ride.objects.filter(driver__user=self.request.user).filter(status__exact=status)
-        
-        #(blog__name='Beatles Blog')
         return context
+
+def Sharer_search(request):
+    context = {}
+    if request.POST:
+        form = SharerSearchForm(request.POST)
+        if form.is_valid():
+            destination = form.cleaned_data['destination']
+            early_arrival_time = form.cleaned_data['early_arrival_time']
+            late_arrival_time = form.cleaned_data['late_arrival_time']
+            sharer_num = form.cleaned_data['sharer_num']
+
+            
+            
+            available_rides = Ride.objects.filter(destination__exact = destination).filter(arrival_time__gte = early_arrival_time).filter(arrival_time__lte = late_arrival_time).filter(status__exact = 'op')#.filter(shareable__exact = )
+            context['form'] = form
+            context['availabel_rides'] = available_rides
+            return render(request, 'Sharer/sharer_search.html', context)
+        else:
+            print('invalid form')
+
+    else:
+        form = SharerSearchForm()
+        context = {'form': form}
+        return render(request, 'Sharer/sharer_search.html', context)
+
+
+def Sharer_confirm(request, pk):
+    if request.POST:
+        print('ppost')
+    else:
+        print('gget')
+        print(pk)
