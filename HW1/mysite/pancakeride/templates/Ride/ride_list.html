@@ -39,3 +39,12 @@
   {% endif %} 
 
 {% endblock %}
+
+<p><a href="{% url 'pancakeride:ride_list'%}?s=op">open</a></p>
+<p><a href="{% url 'pancakeride:ride_list'%}?s=cf">comfirm</a></p>
+<p><a href="{% url 'pancakeride:ride_list'%}?s=cp">complete</a></p>
+<p><a href="{% url 'pancakeride:main_home'%}">home</a></p>
+
+{% if status != 'cp' %}
+status
+{% endif %}

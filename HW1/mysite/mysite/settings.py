@@ -73,7 +73,7 @@ TEMPLATES = [
 
 # my_project/settings.py
 LOGIN_REDIRECT_URL = '/pancake/home/'
-LOGOUT_REDIRECT_URL = '/home/'
+LOGOUT_REDIRECT_URL = '/pancake/home/'
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 

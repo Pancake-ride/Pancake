@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<h1>Driver Search List</h1>
+{% if availabel_rides %}
+<ul>
+  {% for request in availabel_rides %}
+    <li>
+      <a style="color:#888" href = "{{ request.get_driver_confirm_url }}">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+  <p>You don't host any ride.</p>
+{% endif %}
+</body>
+</html>
+
+<p><a href="{% url 'pancakeride:main_home'%}">home</a></p>

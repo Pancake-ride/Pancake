@@ -1,8 +1,11 @@
 {% block content %}
 {% if user.is_authenticated %}
   Hi Hi {{ user.username }}!
-  <p><a href="{% url 'pancakeride:ride_list'%}?s=op">status</a></p>
-
+  <p><a href="{% url 'pancakeride:ride_list'%}?s=op">status</a></p> 
+  <p><a href="{% url 'pancakeride:driver_register'%}">driver regist/edit</a></p>
+  <p><a href="{% url 'pancakeride:ride_request'%}">Ride Request</a></p>
+  <p><a href="{% url 'pancakeride:sharer_search'%}">Share Search</a></p>
+  <p><a href="{% url 'pancakeride:driver_search'%}">Driver Search</a></p>
   <p><a href="{% url 'logout' %}">logout</a></p>  
 {% else %}
   <p>You are not logged in</p>

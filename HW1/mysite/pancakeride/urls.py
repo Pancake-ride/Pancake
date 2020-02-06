@@ -14,5 +14,7 @@ urlpatterns =[
     path('home/', TemplateView.as_view(template_name='Home/main_home.html'), name='main_home'),
     re_path(r'^sharer/search/$', views.Sharer_search, name='sharer_search'),
     path('sharer/confirm/<uuid:pk>/', views.Sharer_confirm, name='sharer_confirm'),
+    path('driver/search/', views.Driver_search, name='driver_search'),
+    path('driver/confirm/<uuid:pk>/', views.Driver_confirm, name='driver_confirm')
     #path('home/', )
 ]

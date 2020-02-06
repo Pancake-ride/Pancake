@@ -8,7 +8,7 @@ from .models import Ride, Driver
 from django.db import IntegrityError
 from django.contrib import messages
 from django.views import generic
-from django.db.models import Q
+from django.db.models import Q, F
 from django.core.mail import EmailMessage
 
 from .forms import DriverRegisteForm, RideRequestForm, SharerSearchForm
@@ -19,9 +19,9 @@ def Driver_regist(request):
         form = DriverRegisteForm(request.POST)
         if form.is_valid():
             if Driver.objects.filter(user = request.user).exists():
-                # have registed
-                return redirect(reverse('login'))
-            driver_info = Driver.objects.create(user = request.user,capacity = 1)
+                driver_info = get_object_or_404(Driver, pk = request.user)
+            else:
+                driver_info = Driver.objects.create(user = request.user,capacity = 1)
             driver_info.first_name = form.cleaned_data['first_name']
             driver_info.last_name = form.cleaned_data['last_name']
             driver_info.license_plate_number = form.cleaned_data['license_plate_number']
@@ -29,9 +29,20 @@ def Driver_regist(request):
             driver_info.special_vehicle_info = form.cleaned_data['special_vehicle_info']
             driver_info.vehicle_type = form.cleaned_data['vehicle_type']
             driver_info.save()
-            return redirect(reverse('login'))
+            return redirect('pancakeride:main_home')
     else:
-        form = DriverRegisteForm()
+        if Driver.objects.filter(user = request.user).exists():
+            driver_info = get_object_or_404(Driver, pk = request.user)
+            form = DriverRegisteForm(initial = {
+                'first_name':driver_info.first_name,
+                'last_name':driver_info.last_name,
+                'license_plate_number':driver_info.license_plate_number,
+                'capacity':driver_info.capacity,
+                'special_vehicle_info':driver_info.special_vehicle_info,
+                'vehicle_type':driver_info.vehicle_type,
+            })
+        else:
+            form = DriverRegisteForm()
     return render(request, 'Driver/driver_register.html', {'form': form})
 
 @login_required
@@ -48,8 +59,10 @@ def Ride_request(request):
             ride_info.shareable = form.cleaned_data['shareable']
 
             ride_info.save()
-            return redirect(reverse('login'))
-
+            return redirect('pancakeride:main_home')
+        else:
+            print('invalid form')
+            render(request, 'Ride/ride_request.html', {'form': RideRequestForm()})
     else:
         form = RideRequestForm()
     return render(request, 'Ride/ride_request.html', {'form': form})
@@ -111,6 +124,7 @@ class RideListView(LoginRequiredMixin, generic.ListView):
         context['owner_ride_list'] = Ride.objects.filter(owner__exact=self.request.user).filter(status__exact=status)
         context['sharer_ride_list'] = Ride.objects.filter(sharer=self.request.user).filter(status__exact=status)
         context['driver_ride_list'] = Ride.objects.filter(driver__user=self.request.user).filter(status__exact=status)
+        context['status'] = status
         return context
 
 def Sharer_search(request):
@@ -123,7 +137,7 @@ def Sharer_search(request):
             late_arrival_time = form.cleaned_data['late_arrival_time']
             sharer_num = form.cleaned_data['sharer_num']
 
-            available_rides = Ride.objects.filter(destination__exact = destination).filter(arrival_time__gte = early_arrival_time).filter(arrival_time__lte = late_arrival_time).filter(status__exact = 'op').filter(shareable__exact = True)
+            available_rides = Ride.objects.filter(destination__exact = destination).filter(arrival_time__gte = early_arrival_time).filter(arrival_time__lte = late_arrival_time).filter(status__exact = 'op').filter(shareable__exact = True).filter(sharer__isnull = True).exclude(owner = request.user)
             context['form'] = form
             context['availabel_rides'] = available_rides
             return render(request, 'Sharer/sharer_search.html', context)
@@ -142,8 +156,9 @@ def Sharer_confirm(request, pk):
         print('ppost')
         print(request.POST['sharer_num'])
         ride_detail.sharer_num = request.POST['sharer_num']
+        ride_detail.sharer = request.user
         ride_detail.save()
-        return redirect(reverse('login'))
+        return redirect('pancakeride:main_home')
     else:
         print('gget')
         ride_detail = get_object_or_404(Ride, pk = pk)
@@ -151,3 +166,30 @@ def Sharer_confirm(request, pk):
             print('user Id error!')
         context = {'ride_detail': ride_detail}
         return render(request, 'Sharer/sharer_confirm.html', context)
+
+def Driver_search(request):
+    if request.method == 'GET':
+        context = {}
+        if Driver.objects.filter(user = request.user).exists():
+            print('ddrive')
+            capacity = get_object_or_404(Driver, pk = request.user).capacity
+            vehicle_type = get_object_or_404(Driver, pk = request.user).vehicle_type
+            available_rides = Ride.objects.annotate(i_sum=F('passenger_num') + F('sharer_num')).filter(i_sum__lte = capacity).filter(driver__isnull = True).exclude(owner = request.user).filter(vehicle_type__exact = vehicle_type)
+            context['availabel_rides'] = available_rides
+            return render(request, 'Driver/driver_search.html', context)
+        else:
+            return redirect('pancake:driver_register')
+    else:
+        #print('ppppp')
+        return redirect('pancakeride:main_home')
+
+def Driver_confirm(request, pk):
+    ride_detail = get_object_or_404(Ride, pk = pk)
+    if request.method == 'GET':
+        context = {'ride_detail': ride_detail}
+        return render(request, 'Driver/driver_confirm.html', context)
+    else:
+        ride_detail.driver = get_object_or_404(Driver, pk = request.user)
+        ride_detail.status = 'cf'
+        ride_detail.save()
+        return redirect('pancakeride:main_home')
