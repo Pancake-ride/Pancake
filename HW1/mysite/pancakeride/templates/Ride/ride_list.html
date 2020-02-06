@@ -2,11 +2,19 @@
   <h1>Ride List</h1>
   {% if owner_ride_list %}
   <ul>
-    {% for request in owner_ride_list %}
-      <li>
-        <a style="color:#888" href = "{{ request.get_ride_edit_url }}">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
-      </li>
-    {% endfor %}
+    {% if status == 'op' %}
+      {% for request in owner_ride_list %}
+        <li>
+          <a style="color:#888" href = "{{ request.get_ride_edit_url }}">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
+        </li>
+      {% endfor %}
+    {% else %}
+      {% for request in owner_ride_list %}
+        <li>
+          <a style="color:#888" href = "{{ request.get_ride_detail_url }}">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
+        </li>
+      {% endfor %}  
+    {% endif %}
   </ul>
   {% else %}
     <p>You don't host any ride.</p>
@@ -17,7 +25,7 @@
   <ul>
     {% for request in sharer_ride_list %}
       <li>
-        <a style="color:#888">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
+        <a style="color:#888" href = "{{ request.get_ride_detail_url }}">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
       </li>
     {% endfor %}
   </ul>
@@ -27,13 +35,17 @@
 
   <h1>Drive List</h1>
   {% if driver_ride_list %}
-  <ul>
-    {% for request in driver_ride_list %}
-      <li>
-        <a style="color:#888">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
-      </li>
-    {% endfor %}
-  </ul>
+    <ul>
+      {% for request in driver_ride_list %}
+        <li>
+          <a style="color:#888" href = "{{ request.get_ride_detail_url }}">Arrival time: {{ request.arrival_time }} Destination: {{request.destination}}</a>{% if request.driver%}(Driver: {{request.driver}}){% endif %}(status: {{request.status}})
+        </li>
+        {% if status == 'cf' %}
+          <a style="color:rgb(248, 11, 11)" href = "{{ request.get_driver_complete_url }}">complete</a>
+        {% endif %}
+      {% endfor %}
+    </ul>
+
   {% else %}
     <p>You don't drive any ride.</p>
   {% endif %} 

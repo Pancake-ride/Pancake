@@ -89,3 +89,9 @@ class Ride(models.Model):
 
     def get_ride_edit_url(self):
         return reverse('pancakeride:ride_request_edit', args=[str(self.id)])
+
+    def get_ride_detail_url(self):
+        return reverse('pancakeride:ride_detail', args=[str(self.id)])
+
+    def get_driver_complete_url(self):
+        return reverse('pancakeride:driver_complete', args=[str(self.id)])

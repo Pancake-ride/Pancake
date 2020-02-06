@@ -15,6 +15,7 @@ urlpatterns =[
     re_path(r'^sharer/search/$', views.Sharer_search, name='sharer_search'),
     path('sharer/confirm/<uuid:pk>/', views.Sharer_confirm, name='sharer_confirm'),
     path('driver/search/', views.Driver_search, name='driver_search'),
-    path('driver/confirm/<uuid:pk>/', views.Driver_confirm, name='driver_confirm')
+    path('driver/confirm/<uuid:pk>/', views.Driver_confirm, name='driver_confirm'),
+    path('driver/complete/<uuid:pk>', views.Driver_complete, name='driver_complete'),
     #path('home/', )
 ]

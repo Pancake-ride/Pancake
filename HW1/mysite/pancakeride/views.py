@@ -193,3 +193,10 @@ def Driver_confirm(request, pk):
         ride_detail.status = 'cf'
         ride_detail.save()
         return redirect('pancakeride:main_home')
+
+def Driver_complete(request, pk):
+    ride_detail = get_object_or_404(Ride, pk = pk)
+    ride_detail.status = 'cp'
+    ride_detail.save()
+    print('hahahaha')
+    return redirect('pancakeride:ride_list')
